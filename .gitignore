@@ -1,0 +1,17 @@
+# Entorn virtual
+venv/
+__pycache__/
+*.pyc
+
+# Fitxers de sistema
+.DS_Store
+Thumbs.db
+
+# Fitxers compartits (per evitar pujar dades reals)
+shared_files/*
+
+# Configuracions de VSCode
+.vscode/
+
+# Fitxers temporals
+*.log
