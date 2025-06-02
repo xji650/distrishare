@@ -18,6 +18,7 @@ class Peer:
         """
         self.ip = ip
         self.port = port
+        self.multicast = None 
         self.known_nodes = set()
 
         # 1) Servidor TCP
@@ -25,11 +26,24 @@ class Peer:
         info(f"Peer inicializado en {self.ip}:{self.port}")
 
         # 2) Discovery híbrido: multicast HELLO
-        self.multicast = MulticastDiscovery(
-            my_ip=self.ip,
-            my_port=self.port,
-            callback_new_peer=self._on_new_multicast_peer
-        )
+        self.multicast = None 
+
+        # self.multicast = MulticastDiscovery(
+        #     my_ip=self.ip,
+        #     my_port=self.port,
+        #     callback_new_peer=self._on_new_multicast_peer
+        # )
+        
+    def start_multicast(self, force=False):
+        if self.multicast is None or force:
+            self.multicast = MulticastDiscovery(
+                my_ip=self.ip,
+                my_port=self.port,
+                callback_new_peer=self._on_new_multicast_peer
+            )
+            info("[Peer] Multicast activado manualmente.")
+        else:
+            info("[Peer] Multicast ya estaba activo.")
 
     def _on_new_multicast_peer(self, peer_ip: str, peer_port: int):
         """
@@ -53,14 +67,22 @@ class Peer:
 
     def list_known_nodes(self):
         """
-        Muestra los peers que conocemos (bootstrap + multicast).
+        Imprime por pantalla la lista de peers que conocemos (tras registro o multicast).
+        Solo muestra los que están activos actualmente.
         """
         if not self.known_nodes:
-            print("No hay nodos conocidos aún.")
+            print("No hay nodos conocidos. → Ejecuta 'Connectar al bootstrap' primero.")
             return
-        print("Nodos coneguts:")
-        for ip, puerto in self.known_nodes:
-            print(f"  • {ip}:{puerto}")
+
+        print("Nodos activos:")
+        activos = 0
+        for ip, port in self.known_nodes:
+            if is_node_alive(ip, port):
+                print(f"  • {ip}:{port}")
+                activos += 1
+        if activos == 0:
+            print("⚠️  No hay nodos activos actualmente.")
+
 
     def share_file(self, path: str):
         """
@@ -95,3 +117,12 @@ class Peer:
         """
         info(f"[Peer] Iniciando descarga de '{filename}' desde {ip}:{port}...")
         download_file(ip, port, filename)
+
+import socket
+
+def is_node_alive(ip: str, port: int) -> bool:
+    try:
+        with socket.create_connection((ip, port), timeout=1):
+            return True
+    except:
+        return False

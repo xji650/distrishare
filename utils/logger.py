@@ -12,5 +12,4 @@ def error(msg: str):
     print(f"[ERROR {now}] {msg}")
 
 def debug(msg: str):
-    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    print(f"[DEBUG {now}] {msg}")
+    pass

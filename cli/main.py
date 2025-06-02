@@ -28,7 +28,8 @@ def main():
         print("4. Descarregar un fitxer")
         print("5. Compartir fitxer")
         print("6. Veure fitxers locals")
-        print("7. Sortir")
+        print("7. Activar descubrimiento multicast")
+        print("8. Sortir")
 
         choice = input("> ").strip()
 
@@ -83,8 +84,11 @@ def main():
                     print(f"   • {a}")
             else:
                 print("No hi ha fitxers compartits locals.")
+                
+        elif choice == "7":
+            peer.start_multicast()
 
-        elif choice == '7':
+        elif choice == '8':
             print("Sortint de DistriShare... Adeu!")
             sys.exit(0)
 
