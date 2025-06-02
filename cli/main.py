@@ -1,0 +1,95 @@
+# cli/main.py
+
+import sys
+from core.peer import Peer
+from utils.logger import info, error
+
+def main():
+    print("=== DistriShare CLI ===")
+    # Parámetros por línea de comandos: `python main.py <mi_puerto>`
+    if len(sys.argv) < 2:
+        print("Uso: python main.py <PUERTO>")
+        sys.exit(1)
+
+    try:
+        puerto_propio = int(sys.argv[1])
+    except ValueError:
+        print("Error: el puerto debe ser un entero.")
+        sys.exit(1)
+
+    # Creamos el peer con IP por defecto y puerto indicado
+    peer = Peer(ip='127.0.0.1', port=puerto_propio)
+
+    while True:
+        print("\nMenú DistriShare:")
+        print("1. Connectar al bootstrap node")
+        print("2. Llistar nodes coneguts")
+        print("3. Buscar un fitxer")
+        print("4. Descarregar un fitxer")
+        print("5. Compartir fitxer")
+        print("6. Veure fitxers locals")
+        print("7. Sortir")
+
+        choice = input("> ").strip()
+
+        if choice == '1':
+            peer.connect_to_bootstrap()
+
+        elif choice == '2':
+            peer.list_known_nodes()
+
+        elif choice == '3':
+            filename = input("Nom del fitxer a buscar: ").strip()
+            if not filename:
+                error("No has introduït cap nom de fitxer.")
+                continue
+            encontrados = peer.search_file(filename)
+            if encontrados:
+                print("✅ Fitxer trobat en els següents nodes:")
+                for ip, port in encontrados:
+                    print(f"   • {ip}:{port}")
+            else:
+                print("❌ Fitxer no trobat a cap node conegut.")
+
+        elif choice == '4':
+            ip = input("IP del node origen: ").strip()
+            port_str = input("Port del node origen: ").strip()
+            filename = input("Nom del fitxer a descarregar: ").strip()
+
+            try:
+                port = int(port_str)
+            except ValueError:
+                error("El port ha de ser un número enter.")
+                continue
+
+            if not ip or not filename:
+                error("Tots els camps són obligatoris.")
+                continue
+
+            peer.download_file(ip, port, filename)
+
+        elif choice == '5':
+            path = input("Ruta completa del fitxer a compartir: ").strip()
+            if not path:
+                error("Has de proporcionar la ruta d'un fitxer.")
+                continue
+            peer.share_file(path)
+
+        elif choice == '6':
+            archivos = peer.list_local_files()
+            if archivos:
+                print("Fitxers disponibles localment (shared_files/):")
+                for a in archivos:
+                    print(f"   • {a}")
+            else:
+                print("No hi ha fitxers compartits locals.")
+
+        elif choice == '7':
+            print("Sortint de DistriShare... Adeu!")
+            sys.exit(0)
+
+        else:
+            error("Opció no vàlida. Torna-ho a provar.")
+
+if __name__ == "__main__":
+    main()
