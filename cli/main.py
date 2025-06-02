@@ -5,7 +5,7 @@ from core.peer import Peer
 from utils.logger import info, error
 
 def main():
-    print("=== DistriShare CLI ===")
+    print("=== DistriShare CLI (P2P Híbrido) ===")
     # Parámetros por línea de comandos: `python main.py <mi_puerto>`
     if len(sys.argv) < 2:
         print("Uso: python main.py <PUERTO>")

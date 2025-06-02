@@ -3,6 +3,11 @@
 
 # Prefijo para búsqueda de fichero:
 SEARCH_PREFIX = "SEARCH:"
+FOUND         = "FOUND"
+NOT_FOUND     = "NOT_FOUND"
+
+# Prefijo para multicast HELLO:
+HELLO_PREFIX = "HELLO:"   # Formato (texto) → "HELLO:127.0.0.1:9001"
 
 # Respuestas posibles:
 FOUND = "FOUND"

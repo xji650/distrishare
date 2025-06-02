@@ -101,3 +101,109 @@ python3 -m cli.main 9000
 
 Pots clonar, millorar i experimentar amb el projecte.  
 Per dubtes, propostes o col·laboracions: *xj3@udl.cat*
+
+
+# Recordatorio: cómo ejecutar y probar paso a paso
+
+## 1. Arrancar el Bootstrap Server (terminal A)
+```bash
+cd distrishare
+python3 -m network.bootstrap_server
+```
+Vemos algo como:
+```css
+[INFO 2025-06-02 12:00:00] [BOOTSTRAP] Servidor escuchando en 0.0.0.0:8000
+```
+
+## 2. Arrancar Peer 1 (terminal B)
+```bash
+cd distrishare
+python3 -m cli.main 9001
+```
+Aparecerá:
+```csharp
+[INFO …] Peer inicializado en 127.0.0.1:9001
+Menú DistriShare: …
+```
+En Peer 1 (Terminal B):
+1. **Opc. 5** → Compartir fichero (por ejemplo: `/home/usuario/documentos/ejemplo.txt`).
+2. **Opc. 1** → Connectar al bootstrap
+
+Ahora `known_nodes = {('127.0.0.1', 9001)}` (él mismo).
+
+3. **Opc. 2** → Llistar nodos conocidos
+
+Aparecerá:
+```text
+• 127.0.0.1:9001
+```
+
+## 3. Arrancar Peer 2 (terminal C)
+```bash
+cd distrishare
+python3 -m cli.main 9002
+```
+Aparece:
+```csharp
+[INFO …] Peer inicializado en 127.0.0.1:9002
+```
+En Peer 2 (Terminal C):
+Sin hacer nada, después de unos segundos (~5 seg), debería recibir automáticamente el HELLO de Peer 1 por multicast y verlo en consola:
+```less
+[INFO …] [Multicast] Nuevo peer descubierto: ('127.0.0.1', 9001)
+[INFO …] [Peer] Añadido vía multicast → ('127.0.0.1', 9001)
+```
+
+1. **Opc. 2** → Llistar nodos conocidos
+
+Verás:
+```text
+• 127.0.0.1:9001
+```
+
+2. **Opc. 3** → Buscar fichero `ejemplo.txt`
+
+Si Peer 1 compartió `/ejemplo.txt` antes, aquí obtendrá:
+```csharp
+[INFO …] [Peer] Buscando 'ejemplo.txt' en 1 nodos...
+✅ Fitxer trobat en els següents nodes:
+   • 127.0.0.1:9001
+```
+
+3. **Opc. 4** → Descargar desde Peer 1
+
+Indica IP `127.0.0.1`, puerto `9001`, fichero `ejemplo.txt`.
+
+Obtendrás:
+```csharp
+[INFO …] [Peer] Iniciando descarga de 'ejemplo.txt' desde 127.0.0.1:9001...
+[INFO …] Descargado 'ejemplo.txt' desde 127.0.0.1:9001 → downloads/ejemplo.txt
+```
+
+4. **Opc. 6** → Ver archivos locales (en `shared_files/` de Peer 2).
+
+Si no ha compartido nada, estará vacío. El descargado queda en `downloads/`.
+
+5. **Opc. 7** → Salir.
+
+## 4. Arrancar Peer 3 (terminal D) sin usar Bootstrap
+```bash
+cd distrishare
+python3 -m cli.main 9003
+```
+Verás en consola algo como:
+```csharp
+[INFO …] Peer inicializado en 127.0.0.1:9003
+```
+
+Tras ~5 segundos, recibirá por multicast al menos el HELLO de Peer 1 y, si Peer 2 ya estaba encendido, también el HELLO de Peer 2:
+```less
+[INFO …] [Multicast] Nuevo peer descubierto: ('127.0.0.1', 9001)
+[INFO …] [Peer] Añadido vía multicast → ('127.0.0.1', 9001)
+[INFO …] [Multicast] Nuevo peer descubierto: ('127.0.0.1', 9002)
+[INFO …] [Peer] Añadido vía multicast → ('127.0.0.1', 9002)
+```
+
+En este punto, sin haber tocado el Bootstrap, Peer 3 ya conoce a Peer 1 y Peer 2.
+
+
