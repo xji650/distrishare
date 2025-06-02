@@ -19,3 +19,6 @@ MULTICAST_TTL   = 1              # Time-To-Live (cuántos saltos) para los mensa
 MULTICAST_INTERVAL = 5           # segundos entre cada anuncio "HELLO"
 
 # El puerto se lo asignaremos desde CLI
+
+# Clave compartida para cifrado de mensajes
+SHARED_SECRET = "distrishare2024"

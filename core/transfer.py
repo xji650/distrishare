@@ -3,6 +3,8 @@
 import socket
 import threading
 import os
+import json
+from utils.config import SHARED_SECRET
 from network.protocol import SEARCH_PREFIX, FOUND, NOT_FOUND
 from utils.config import SHARED_FOLDER, DOWNLOAD_FOLDER
 from utils.logger import info, error, debug
@@ -19,9 +21,7 @@ def ensure_folders():
 def handle_client(conn: socket.socket):
     """
     Handler que se ejecuta en un hilo nuevo para cada conexión entrante.
-    1) Si recibe 'SEARCH:<filename>', responde FOUND/NOT_FOUND
-    2) Si recibe '<filename>' a secas, interpreta descarga:
-       Envía el contenido binario si existe o 'ERROR: File not found.'
+    Solo acepta peticiones si el secreto es correcto.
     """
     try:
         data = conn.recv(4096)
@@ -29,40 +29,52 @@ def handle_client(conn: socket.socket):
             conn.close()
             return
 
-        message = data.decode()
-        debug(f"Cliente conectó con mensaje: {message}")
-
-        # --- Caso 1: búsqueda de fichero ---
-        if message.startswith(SEARCH_PREFIX):
-            filename = message[len(SEARCH_PREFIX):]
-            filepath = os.path.join(SHARED_FOLDER, filename)
-            if os.path.isfile(filepath):
-                conn.sendall(FOUND.encode())
-                debug(f"Respondí FOUND para '{filename}'")
-            else:
-                conn.sendall(NOT_FOUND.encode())
-                debug(f"Respondí NOT_FOUND para '{filename}'")
+        # Intenta cargar como JSON
+        try:
+            msg = json.loads(data.decode())
+            secret = msg.get("secret")
+            if secret != SHARED_SECRET:
+                conn.sendall("ERROR: Autentication faild.".encode())
+                conn.close()
+                return
+            # --- Caso 1: búsqueda de fichero ---
+            if msg.get("type") == "search":
+                filename = msg.get("filename", "")
+                filepath = os.path.join(SHARED_FOLDER, filename)
+                if os.path.isfile(filepath):
+                    conn.sendall(FOUND.encode())
+                    debug(f"Respondí FOUND para '{filename}'")
+                else:
+                    conn.sendall(NOT_FOUND.encode())
+                    debug(f"Respondí NOT_FOUND para '{filename}'")
+                conn.close()
+                return
+            # --- Caso 2: descarga de fichero ---
+            if msg.get("type") == "download":
+                filename = msg.get("filename", "")
+                filepath = os.path.join(SHARED_FOLDER, filename)
+                if not os.path.isfile(filepath):
+                    conn.sendall(f"ERROR: File not found.".encode())
+                    conn.close()
+                    return
+                with open(filepath, 'rb') as f:
+                    while True:
+                        chunk = f.read(4096)
+                        if not chunk:
+                            break
+                        conn.sendall(chunk)
+                debug(f"Transferencia completada de '{filename}'")
+                conn.close()
+                return
+            # Si no reconoce el tipo
+            conn.sendall(f"ERROR: Mensaje malformado o tipo desconocido.".encode())
             conn.close()
             return
-
-        # --- Caso 2: solicitud de descarga ---
-        filename = message.strip()
-        filepath = os.path.join(SHARED_FOLDER, filename)
-        if not os.path.isfile(filepath):
-            conn.sendall(f"ERROR: File not found.".encode())
+        except Exception:
+            # Si no es JSON válido, responde error
+            conn.sendall("ERROR: Formato de mensaje inválido. Se requiere JSON.".encode())
             conn.close()
             return
-
-        # Envía el fichero en bloques de 4096 bytes
-        with open(filepath, 'rb') as f:
-            while True:
-                chunk = f.read(4096)
-                if not chunk:
-                    break
-                conn.sendall(chunk)
-
-        debug(f"Transferencia completada de '{filename}'")
-        conn.close()
 
     except Exception as e:
         error(f"Excepción en handle_client: {e}")
@@ -100,7 +112,9 @@ def remote_file_exists(ip: str, port: int, filename: str) -> bool:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(2)  # 2 segundos de timeout
         sock.connect((ip, port))
-        sock.sendall(f"{SEARCH_PREFIX}{filename}".encode())
+        # Enviar mensaje como JSON que incluya el secreto
+        payload = json.dumps({"type": "search", "filename": filename, "secret": SHARED_SECRET})
+        sock.sendall(payload.encode())
 
         data = sock.recv(1024).decode()
         sock.close()
@@ -122,7 +136,9 @@ def download_file(ip: str, port: int, filename: str):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(5)
         sock.connect((ip, port))
-        sock.sendall(filename.encode())
+        payload = json.dumps({"type": "download", "filename": filename, "secret": SHARED_SECRET})
+        sock.sendall(payload.encode())
+
 
         with open(destino, 'wb') as f:
             while True:
