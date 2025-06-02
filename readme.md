@@ -56,12 +56,12 @@ DistriShare/
 
 ### 1. Inicia el Bootstrap Server (se queda escuchando en el puerto 8000):
 ```bash
-python3 network/bootstrap_server.py
+python3 -m network.bootstrap_server
 ```
 
 ### 2. Inicia un Peer (por ejemplo en otro terminal), asignándole un puerto:
 ```bash
-python3 cli/main.py 9000
+python3 -m cli.main 9000
 ```
 #### Reemplaza 9000 por el puerto libre que quieras para ese peer (p.ej. 9001, 9002, …).
 
