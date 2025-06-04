@@ -6,19 +6,35 @@ from utils.logger import info, error
 
 def main():
     print("=== DistriShare CLI (P2P Híbrido) ===")
-    # Parámetros por línea de comandos: `python main.py <mi_puerto>`
-    if len(sys.argv) < 2:
-        print("Uso: python main.py <PUERTO>")
+
+    # Parámetros por línea de comandos permitidos:
+    #  - python main.py <PUERTO>
+    #  - python main.py <MI_IP> <PUERTO>
+    if len(sys.argv) not in (2, 3):
+        print("Uso:")
+        print("  python main.py <PUERTO>             # escucha en 127.0.0.1:<PUERTO>")
+        print("  python main.py <MI_IP> <PUERTO>    # escucha en <MI_IP>:<PUERTO>")
         sys.exit(1)
 
-    try:
-        puerto_propio = int(sys.argv[1])
-    except ValueError:
-        print("Error: el puerto debe ser un entero.")
-        sys.exit(1)
+    if len(sys.argv) == 2:
+        # Solo puerto → IP por defecto = localhost
+        mi_ip = '127.0.0.1'
+        try:
+            puerto_propio = int(sys.argv[1])
+        except ValueError:
+            print("Error: el puerto debe ser un entero.")
+            sys.exit(1)
+    else:
+        # IP + puerto
+        mi_ip = sys.argv[1]
+        try:
+            puerto_propio = int(sys.argv[2])
+        except ValueError:
+            print("Error: el puerto debe ser un entero.")
+            sys.exit(1)
 
-    # Creamos el peer con IP por defecto y puerto indicado
-    peer = Peer(ip='127.0.0.1', port=puerto_propio)
+    # Creamos el peer usando la IP y el puerto que toque
+    peer = Peer(ip=mi_ip, port=puerto_propio)
 
     while True:
         print("\nMenú DistriShare:")
