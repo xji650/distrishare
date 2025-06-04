@@ -18,15 +18,21 @@ if BASE_DIR not in sys.path:
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 
 # Importamos la clase Peer, la función is_node_alive y la función register_with_bootstrap
-from core.peer import Peer, is_node_alive           # :contentReference[oaicite:0]{index=0}
-from core.discovery import register_with_bootstrap   # :contentReference[oaicite:1]{index=1}
+from core.peer import Peer, is_node_alive
+from core.discovery import register_with_bootstrap
 from utils.config import SHARED_FOLDER, DOWNLOAD_FOLDER
 
 # --------------------------------------------------
-#  3. Procesamos argumentos de línea de comandos
+# 3. Procesamos argumentos de línea de comandos
 # --------------------------------------------------
 parser = argparse.ArgumentParser(
     description="Arranca DistriShare Web + Peer P2P"
+)
+parser.add_argument(
+    "--peer-ip",
+    type=str,
+    default="127.0.0.1",
+    help="IP en la que este peer P2P escuchará (por defecto 127.0.0.1)"
 )
 parser.add_argument(
     "--peer-port",
@@ -35,23 +41,31 @@ parser.add_argument(
     help="Puerto TCP en el que este peer P2P escuchará (por defecto 8001)"
 )
 parser.add_argument(
+    "--flask-host",
+    type=str,
+    default="0.0.0.0",
+    help="Host/IP en el que Flask arrancará (por defecto 0.0.0.0)"
+)
+parser.add_argument(
     "--flask-port",
     type=int,
     default=5000,
     help="Puerto HTTP en el que Flask arrancará (por defecto 5000)"
 )
 args = parser.parse_args()
+
+PEER_IP = args.peer_ip
 PEER_PORT = args.peer_port
+FLASK_HOST = args.flask_host
 FLASK_PORT = args.flask_port
 
 # --------------------------------------------------
-#  4. Inicializamos Flask y el objeto Peer
+# 4. Inicializamos Flask y el objeto Peer
 # --------------------------------------------------
 app = Flask(__name__)
 app.secret_key = "distri_flask_secret_key_2025"
 
-# Usaremos la IP local de pruebas "127.0.0.1".
-PEER_IP = "127.0.0.1"
+# Creamos el Peer usando la IP y el puerto que pasemos por argumentos
 peer = Peer(ip=PEER_IP, port=PEER_PORT)
 
 # Nos aseguramos de que existan las carpetas de shared_files y downloads
@@ -61,7 +75,7 @@ if not os.path.isdir(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
 
 # --------------------------------------------------
-#  5. Definición de rutas de Flask
+# 5. Definición de rutas de Flask
 # --------------------------------------------------
 
 @app.route("/")
@@ -131,7 +145,7 @@ def listar_bootstrap():
     """
     try:
         # register_with_bootstrap retorna lista de tuplas [(ip, puerto), ...]
-        nodos = register_with_bootstrap(peer.ip, peer.port)  # :contentReference[oaicite:2]{index=2}
+        nodos = register_with_bootstrap(peer.ip, peer.port)
 
         # Añadimos cada nodo (excluyendo este mismo) a peer.known_nodes
         for (ip, puerto) in nodos:
@@ -164,7 +178,7 @@ def buscar_archivo():
         if not filename:
             flash("Debes indicar un nombre de archivo para buscar.", "warning")
             return redirect(url_for("buscar_archivo"))
-        encontrados = peer.search_file(filename)  # devuelve lista de (ip, puerto) :contentReference[oaicite:3]{index=3}
+        encontrados = peer.search_file(filename)
         return render_template("resultados_busqueda.html", filename=filename, encontrados=encontrados)
     return render_template("buscar.html")
 
@@ -191,7 +205,7 @@ def descargar_archivo():
         return redirect(url_for("buscar_archivo"))
 
     try:
-        peer.download_file(ip, port, filename)  # :contentReference[oaicite:4]{index=4}
+        peer.download_file(ip, port, filename)
         flash(f"Descarga de '{filename}' iniciada. Revisa la carpeta {DOWNLOAD_FOLDER}.", "success")
     except Exception as e:
         flash(f"No se pudo descargar: {e}", "danger")
@@ -210,7 +224,7 @@ def compartir():
             flash("Debes indicar la ruta completa del archivo a compartir.", "warning")
             return redirect(url_for("compartir"))
         try:
-            peer.share_file(path)  # :contentReference[oaicite:5]{index=5}
+            peer.share_file(path)
             flash(f"Archivo '{os.path.basename(path)}' compartido correctamente.", "success")
         except Exception as e:
             flash(f"No se pudo compartir: {e}", "danger")
@@ -223,7 +237,7 @@ def archivos_locales():
     """
     Muestra la lista de archivos que este peer tiene en shared_files/.
     """
-    archivos = peer.list_local_files()  # :contentReference[oaicite:6]{index=6}
+    archivos = peer.list_local_files()
     return render_template("listar_locales.html", archivos=archivos)
 
 
@@ -245,7 +259,7 @@ def start_multicast():
     Activa el descubrimiento multicast en el peer.
     """
     try:
-        peer.start_multicast()  # :contentReference[oaicite:6]{index=6}
+        peer.start_multicast()
         flash("Descubrimiento multicast ACTIVADO.", "success")
     except Exception as e:
         flash(f"No se pudo activar multicast: {e}", "danger")
@@ -258,7 +272,7 @@ def stop_multicast():
     Detiene el descubrimiento multicast en el peer.
     """
     try:
-        peer.stop_multicast()   # :contentReference[oaicite:7]{index=7}
+        peer.stop_multicast()
         flash("Descubrimiento multicast CERRADO.", "warning")
     except Exception as e:
         flash(f"No se pudo cerrar multicast: {e}", "danger")
@@ -278,8 +292,8 @@ def shutdown():
     return "Servidor Flask detenido."
 
 # --------------------------------------------------
-#  6. Run: arrancamos Flask en el puerto FLASK_PORT
+# 6. Run: arrancamos Flask en el host y puerto indicados
 # --------------------------------------------------
 if __name__ == "__main__":
-    # Flask escucha en 0.0.0.0:FLASK_PORT y Peer en PEER_IP:PEER_PORT
-    app.run(host="0.0.0.0", port=FLASK_PORT, debug=True)
+    # Flask escucha en FLASK_HOST:FLASK_PORT y Peer en PEER_IP:PEER_PORT
+    app.run(host=FLASK_HOST, port=FLASK_PORT, debug=True)
