@@ -3,6 +3,7 @@
 import os
 import shutil
 from utils.config import SHARED_FOLDER
+from utils.config import DOWNLOAD_FOLDER
 from utils.logger import info, error
 
 def ensure_shared_folder():
@@ -22,6 +23,21 @@ def list_shared_files() -> list:
         return archivos
     except Exception as e:
         error(f"No se pudieron listar archivos compartidos: {e}")
+        return []
+
+def list_downloaded_files() -> list:
+    """
+    Retorna la lista de nombres de fichero dentro de downloads/.
+    """
+    try:
+        # Asegurarnos de que exista la carpeta de descargas
+        if not os.path.isdir(DOWNLOAD_FOLDER):
+            os.makedirs(DOWNLOAD_FOLDER)
+        # Listar archivos
+        archivos = os.listdir(DOWNLOAD_FOLDER)
+        return archivos
+    except Exception as e:
+        error(f"No se pudieron listar archivos descargados: {e}")
         return []
 
 def add_file(path: str):

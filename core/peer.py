@@ -1,7 +1,7 @@
 # core/peer.py
 
 from core.discovery    import register_with_bootstrap
-from core.index        import list_shared_files, add_file
+from core.index        import list_shared_files, add_file, list_downloaded_files
 from core.transfer     import start_file_server, download_file, remote_file_exists
 from core.multicast    import MulticastDiscovery
 from utils.config      import DEFAULT_PEER_IP
@@ -186,6 +186,12 @@ class Peer:
         Retorna los archivos en shared_files/.
         """
         return list_shared_files()
+    
+    def list_downloaded_files(self) -> list:
+        """
+        Retorna los archivos que este peer ya ha descargado (downloads/).
+        """
+        return list_downloaded_files()
 
     def search_file(self, filename: str) -> list:
         """
