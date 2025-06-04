@@ -7,7 +7,8 @@ FOUND         = "FOUND"
 NOT_FOUND     = "NOT_FOUND"
 
 # Prefijo para multicast HELLO:
-HELLO_PREFIX = "HELLO:"   # Formato (texto) → "HELLO:127.0.0.1:9001"
+HELLO_PREFIX   = "HELLO:"   # Formato: "HELLO:127.0.0.1:9001"
+GOODBYE_PREFIX = "GOODBYE:" # Formato: "GOODBYE:127.0.0.1:9001"
 
 # Respuestas posibles:
 FOUND = "FOUND"

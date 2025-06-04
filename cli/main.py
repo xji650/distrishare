@@ -23,13 +23,16 @@ def main():
     while True:
         print("\nMenú DistriShare:")
         print("1. Connectar al bootstrap node")
-        print("2. Llistar nodes coneguts")
-        print("3. Buscar un fitxer")
-        print("4. Descarregar un fitxer")
-        print("5. Compartir fitxer")
-        print("6. Veure fitxers locals")
-        print("7. Activar descubrimiento multicast")
-        print("8. Sortir")
+        print("2. Llistar tots els nodes coneguts")
+        print("3. Llistar nodes del Bootstrap") 
+        print("4. Llistar nodes del multicast")
+        print("5. Buscar un fitxer")
+        print("6. Descarregar un fitxer")
+        print("7. Compartir fitxer")
+        print("8. Veure fitxers locals")
+        print("9. Activar descubrimiento multicast")
+        print("0. Cerrar descubrimiento multicast")  
+        print("99. Sortir")  
 
         choice = input("> ").strip()
 
@@ -40,6 +43,12 @@ def main():
             peer.list_known_nodes()
 
         elif choice == '3':
+            peer.list_bootstrap_nodes()
+
+        elif choice == '4':
+            peer.list_available_nodes()
+
+        elif choice == '5':
             filename = input("Nom del fitxer a buscar: ").strip()
             if not filename:
                 error("No has introduït cap nom de fitxer.")
@@ -52,7 +61,7 @@ def main():
             else:
                 print("❌ Fitxer no trobat a cap node conegut.")
 
-        elif choice == '4':
+        elif choice == '6':
             ip = input("IP del node origen: ").strip()
             port_str = input("Port del node origen: ").strip()
             filename = input("Nom del fitxer a descarregar: ").strip()
@@ -69,14 +78,14 @@ def main():
 
             peer.download_file(ip, port, filename)
 
-        elif choice == '5':
+        elif choice == '7':
             path = input("Ruta completa del fitxer a compartir: ").strip()
             if not path:
                 error("Has de proporcionar la ruta d'un fitxer.")
                 continue
             peer.share_file(path)
 
-        elif choice == '6':
+        elif choice == '8':
             archivos = peer.list_local_files()
             if archivos:
                 print("Fitxers disponibles localment (shared_files/):")
@@ -85,10 +94,13 @@ def main():
             else:
                 print("No hi ha fitxers compartits locals.")
                 
-        elif choice == "7":
+        elif choice == "9":
             peer.start_multicast()
 
-        elif choice == '8':
+        elif choice == "0":
+            peer.stop_multicast()
+
+        elif choice == "99":
             print("Sortint de DistriShare... Adeu!")
             sys.exit(0)
 
