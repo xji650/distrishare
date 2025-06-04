@@ -1,0 +1,38 @@
+<!-- web/templates/resultados_busqueda.html -->
+{% extends "base.html" %}
+{% block title %}Resultados de Búsqueda | DistriShare Web{% endblock %}
+{% block content %}
+  <h2>Resultados para: "{{ filename }}"</h2>
+  {% if encontrados %}
+    <p>El archivo se encontró en los siguientes peers:</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>IP</th>
+          <th>Puerto</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ip, port in encontrados %}
+        <tr>
+          <td>{{ ip }}</td>
+          <td>{{ port }}</td>
+          <td>
+            <form action="{{ url_for('descargar_archivo') }}" method="post" style="display:inline;">
+              <input type="hidden" name="ip" value="{{ ip }}">
+              <input type="hidden" name="port" value="{{ port }}">
+              <input type="hidden" name="filename" value="{{ filename }}">
+              <button type="submit" class="btn btn-sm btn-success">Descargar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-danger">❌ No se encontró el archivo en ningún peer.</p>
+  {% endif %}
+  <a href="{{ url_for('buscar_archivo') }}" class="btn btn-link">← Nueva búsqueda</a>
+  <a href="{{ url_for('index') }}" class="btn btn-link">← Volver al inicio</a>
+{% endblock %}

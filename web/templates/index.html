@@ -1,0 +1,66 @@
+<!-- web/templates/index.html -->
+{% extends "base.html" %}
+{% block title %}Inicio | DistriShare Web{% endblock %}
+{% block content %}
+  <h1>Bienvenido a DistriShare Web</h1>
+  <p>Selecciona una acción:</p>
+  <div class="row gx-3 gy-3">
+    <!-- Botón para conectar al bootstrap -->
+    <div class="col-md-4">
+      <form action="{{ url_for('conectar_bootstrap') }}" method="post">
+        <button type="submit" class="btn btn-primary w-100">Conectar al Bootstrap</button>
+      </form>
+    </div>
+
+    <!-- Botón para listar nodos conocidos -->
+    <div class="col-md-4">
+      <a href="{{ url_for('listar_nodos') }}" class="btn btn-secondary w-100">Listar Nodos Conocidos</a>
+    </div>
+
+    <!-- Botón para listar nodos en el bootstrap -->
+    <div class="col-md-4">
+      <a href="{{ url_for('listar_bootstrap') }}" class="btn btn-secondary w-100">Listar Nodos Bootstrap</a>
+    </div>
+
+    <!-- Botón para listar nodos multicast -->
+    <div class="col-md-4">
+      <a href="{{ url_for('listar_multicast') }}" class="btn btn-secondary w-100">Listar Nodos Multicast</a>
+    </div>
+
+    <!-- Botón para búsqueda de archivo -->
+    <div class="col-md-4">
+      <a href="{{ url_for('buscar_archivo') }}" class="btn btn-warning w-100">Buscar Archivo</a>
+    </div>
+
+    <!-- Botón para compartir archivo -->
+    <div class="col-md-4">
+      <a href="{{ url_for('compartir') }}" class="btn btn-success w-100">Compartir Archivo</a>
+    </div>
+
+    <!-- Botón para ver archivos locales -->
+    <div class="col-md-4">
+      <a href="{{ url_for('archivos_locales') }}" class="btn btn-info w-100">Ver Archivos Locales</a>
+    </div>
+
+    <!-- Nuevo: Botón para activar multicast -->
+    <div class="col-md-4">
+      <form action="{{ url_for('start_multicast') }}" method="post">
+        <button type="submit" class="btn btn-dark w-100">Activar Multicast</button>
+      </form>
+    </div>
+
+    <!-- Nuevo: Botón para detener multicast -->
+    <div class="col-md-4">
+      <form action="{{ url_for('stop_multicast') }}" method="post">
+        <button type="submit" class="btn btn-outline-dark w-100">Cerrar Multicast</button>
+      </form>
+    </div>
+
+    <!-- Nuevo: Botón para “Salir” (detener Flask en modo dev) -->
+    <div class="col-md-4">
+      <form action="{{ url_for('shutdown') }}" method="post">
+        <button type="submit" class="btn btn-danger w-100">Salir (Detener App)</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!-- web/templates/listar_nodos.html -->
+{% extends "base.html" %}
+{% block title %}{{ title or "Nodos" }} | DistriShare Web{% endblock %}
+{% block content %}
+  <h2>{{ title or "Nodos" }}</h2>
+  {% if estados %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>IP</th>
+          <th>Puerto</th>
+          <th>Estado TCP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for nodo in estados %}
+          <tr>
+            <td>{{ nodo.ip }}</td>
+            <td>{{ nodo.port }}</td>
+            <td>
+              {% if nodo.vivo %}
+                <span class="badge bg-success">✅ Vivo</span>
+              {% else %}
+                <span class="badge bg-danger">❌ Caído</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No hay nodos para mostrar.</p>
+  {% endif %}
+  
+  <a href="{{ url_for('index') }}" class="btn btn-link">← Volver al inicio</a>
+{% endblock %}

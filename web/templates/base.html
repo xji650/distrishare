@@ -1,0 +1,53 @@
+<!-- web/templates/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}DistriShare Web{% endblock %}</title>
+    <!-- Bootstrap CSS vía CDN (puedes descargarlo local si prefieres) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-…"
+          crossorigin="anonymous" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('index') }}">DistriShare Web</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('listar_nodos') }}">Nodos Conocidos</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('listar_bootstrap') }}">Nodos Bootstrap</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('listar_multicast') }}">Nodos Multicast</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('buscar_archivo') }}">Buscar Archivo</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('compartir') }}">Compartir</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('archivos_locales') }}">Archivos Locales</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        <!-- Aquí irá el contenido de cada página específica -->
+        {% endblock %}
+    </div>
+
+    <!-- Bootstrap JS (para componentes interactivos) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-…"
+            crossorigin="anonymous"></script>
+</body>
+</html>

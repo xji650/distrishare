@@ -1,0 +1,14 @@
+<!-- web/templates/buscar.html -->
+{% extends "base.html" %}
+{% block title %}Buscar Archivo | DistriShare Web{% endblock %}
+{% block content %}
+  <h2>Buscar Archivo en la Red</h2>
+  <form action="{{ url_for('buscar_archivo') }}" method="post">
+    <div class="mb-3">
+      <label for="filename" class="form-label">Nombre del archivo</label>
+      <input type="text" class="form-control" id="filename" name="filename" placeholder="por ejemplo: mi_video.mp4" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Buscar</button>
+    <a href="{{ url_for('index') }}" class="btn btn-link">Cancelar</a>
+  </form>
+{% endblock %}
