@@ -240,6 +240,13 @@ def archivos_locales():
     archivos = peer.list_local_files()
     return render_template("listar_locales.html", archivos=archivos)
 
+@app.route("/descargas")
+def archivos_descargados():
+    """
+    Muestra la lista de archivos que este peer ha descargado (downloads/).
+    """
+    archivos = peer.list_downloaded_files()
+    return render_template("listar_descargas.html", archivos=archivos)
 
 @app.route("/descargas/<filename>")
 def servir_descarga(filename):

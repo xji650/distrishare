@@ -1,0 +1,30 @@
+{# web/templates/listar_descargas.html #}
+{% extends "base.html" %}
+
+{% block title %}Archivos Recibidos{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1>Archivos Recibidos</h1>
+    {% if archivos %}
+      <ul class="list-group mt-3">
+        {% for nombre in archivos %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ nombre }}
+            <a href="{{ url_for('servir_descarga', filename=nombre) }}"
+               class="btn btn-sm btn-primary">
+              Descargar
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="alert alert-info mt-3">
+        No hay archivos descargados.
+      </div>
+    {% endif %}
+    <div class="mt-4">
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">Volver al inicio</a>
+    </div>
+  </div>
+{% endblock %}

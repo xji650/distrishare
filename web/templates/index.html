@@ -34,12 +34,19 @@
 
     <!-- Botón para compartir archivo -->
     <div class="col-md-4">
-      <a href="{{ url_for('compartir') }}" class="btn btn-success w-100">Compartir Archivo</a>
+      <a href="{{ url_for('compartir') }}" class="btn btn-success w-100">Subir Archivo</a>
+    </div>
+
+    <!-- NUEVO: botón “Ver descargas” -->
+    <div class="col-md-3 mb-2">
+      <a href="{{ url_for('archivos_descargados') }}" class="btn btn-primary w-100">
+        Ver Recibidos
+      </a>
     </div>
 
     <!-- Botón para ver archivos locales -->
     <div class="col-md-4">
-      <a href="{{ url_for('archivos_locales') }}" class="btn btn-info w-100">Ver Archivos Locales</a>
+      <a href="{{ url_for('archivos_locales') }}" class="btn btn-info w-100">Ver Archivos Subidos</a>
     </div>
 
     <!-- Nuevo: Botón para activar multicast -->
