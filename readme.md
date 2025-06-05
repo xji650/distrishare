@@ -47,7 +47,7 @@ DistriShare/
 
 ---
 
-## 3. Com executar (CLI)
+## 3. Com executar (LAN local)
 ### 3.1. CLI
 #### 1. Inicia el Bootstrap Server (se queda escuchando en el puerto 8000):
 ```bash
@@ -90,7 +90,6 @@ Gestión de archivos
 ```
 ---
 ### 3.2. WEB
-##### Requisitos: Forwarding de puertos en el router para TCP (ej: 9000-9010).
 #### 1. Inicia el Bootstrap Server (se queda escuchando en el puerto 8000):
 ```bash
 python3 -m network.bootstrap_server
@@ -107,10 +106,22 @@ python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 ```
 
 ##### Reemplaza 9000 por el puerto libre que quieras para ese peer (p.ej. 9001, 9002, …).
-
+---
+### 4. Para caso WAN (Internet)
+---
+#### Requisitos: Forwarding de puertos en el router para TCP (ej: 9000-9010).
+#### IP pública estática o DDNS para peers servidores.
+#### Inicia Peer asignándole un ip y un puerto (CLI):
+```bash
+python3 -m cli.main 192.168.1.42 9100
+```
+#### Inicia Peer asignándole un ip y un puerto (WEB):
+```bash
+python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
+```
 ---
 
-## 4. Arquitectura del Sistema
+## 5. Arquitectura del Sistema
 
 ### Componentes Principales
 
@@ -123,7 +134,7 @@ python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 
 ---
 
-## 5. Conceptes Aplicats de Computació Distribuïda
+## 6. Conceptes Aplicats de Computació Distribuïda
 
 - Arquitectura **P2P híbrida**  
 - **Discovery** de nodes (multicast + bootstrap)  
