@@ -3,6 +3,7 @@
 **DistriShare** és una aplicació distribuïda de compartició de fitxers entre usuaris basada en una arquitectura **P2P híbrida**. Combina un **servidor bootstrap** centralitzat per facilitar la connexió inicial i un sistema de **descobriment distribuït** (UDP multicast) per mantenir una xarxa descentralitzada i resilient.
 
 ---
+
 ## Presentació PPT dia 05/06/2025 a classe: [DistriShare.ppt]()
 
 ---
@@ -93,7 +94,9 @@ Gestión de archivos
 0. Salir
 ```
 ---
+
 ### 3.2. WEB
+
 #### 1. Inicia el Bootstrap Server (se queda escuchando en el puerto 8000):
 ```bash
 python3 -m network.bootstrap_server
@@ -113,15 +116,15 @@ python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 
 ---
 
-### 4. Para caso WAN (Internet)
+## 4. Para caso WAN (Internet)
 
-#### Requisitos: Forwarding de puertos en el router para TCP (ej: 9000-9010).
-#### IP pública estática o DDNS para peers servidores.
-#### Inicia Peer asignándole un ip y un puerto (CLI):
+### Requisitos: Forwarding de puertos en el router para TCP (ej: 9000-9010).
+### IP pública estática o DDNS para peers servidores.
+### Inicia Peer asignándole un ip y un puerto (CLI):
 ```bash
 python3 -m cli.main 192.168.1.42 9100
 ```
-#### Inicia Peer asignándole un ip y un puerto (WEB):
+### Inicia Peer asignándole un ip y un puerto (WEB):
 ```bash
 python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 ```
@@ -140,6 +143,7 @@ python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 | **Transfer Manager**   | Maneja descargas y subidas de archivos vía TCP (SEARCH/DOWNLOAD).        |
 
 ---
+
 ## 6. Herramientas Usados
 
 ### Python 3
@@ -150,6 +154,7 @@ python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 ### Web: Flask + Jinja2 (Templates)
 
 ---
+
 ## 7. Conceptes Aplicats de Computació Distribuïda
 
 - Arquitectura **P2P híbrida**  
