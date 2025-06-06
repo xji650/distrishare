@@ -4,6 +4,7 @@
 
 ---
 Presentació PPT dia 05/06/2025 a classe: [DistriShare.ppt]()
+
 ---
 
 ## 1. Característiques Principals
