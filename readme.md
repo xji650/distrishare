@@ -4,7 +4,7 @@
 
 ---
 
-## Presentació PPT dia 05/06/2025 a classe: [DistriShare.ppt]()
+## Presentació PPT dia 05/06/2025 a classe: [DistriShare.ppt](https://github.com/xji650/distrishare/blob/main/DistriShare.pdf)
 
 ---
 
