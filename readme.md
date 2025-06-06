@@ -3,7 +3,7 @@
 **DistriShare** és una aplicació distribuïda de compartició de fitxers entre usuaris basada en una arquitectura **P2P híbrida**. Combina un **servidor bootstrap** centralitzat per facilitar la connexió inicial i un sistema de **descobriment distribuït** (UDP multicast) per mantenir una xarxa descentralitzada i resilient.
 
 ---
-Presentació PPT dia 05/06/2025 a classe: [DistriShare.ppt]()
+## Presentació PPT dia 05/06/2025 a classe: [DistriShare.ppt]()
 
 ---
 
