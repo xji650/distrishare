@@ -110,7 +110,9 @@ python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 ```
 
 ##### Reemplaza 9000 por el puerto libre que quieras para ese peer (p.ej. 9001, 9002, …).
+
 ---
+
 ### 4. Para caso WAN (Internet)
 
 #### Requisitos: Forwarding de puertos en el router para TCP (ej: 9000-9010).
@@ -123,6 +125,7 @@ python3 -m cli.main 192.168.1.42 9100
 ```bash
 python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 ```
+
 ---
 
 ## 5. Arquitectura del Sistema
