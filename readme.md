@@ -3,6 +3,8 @@
 **DistriShare** és una aplicació distribuïda de compartició de fitxers entre usuaris basada en una arquitectura **P2P híbrida**. Combina un **servidor bootstrap** centralitzat per facilitar la connexió inicial i un sistema de **descobriment distribuït** (UDP multicast) per mantenir una xarxa descentralitzada i resilient.
 
 ---
+Presentació PPT dia 05/06/2025 a classe: [DistriShare.ppt]()
+---
 
 ## 1. Característiques Principals
 
@@ -133,8 +135,17 @@ python -m web.app --peer-ip 90.167.87.98 --peer-port 9002 --flask-port 5002
 | **Transfer Manager**   | Maneja descargas y subidas de archivos vía TCP (SEARCH/DOWNLOAD).        |
 
 ---
+## 6. Herramientas Usados
 
-## 6. Conceptes Aplicats de Computació Distribuïda
+### Python 3
+### Entorno virtual python (venv)
+### WSL para simular Linux en Windows 
+### VSC
+### Control de versiones con Git - GitHub
+### Web: Flask + Jinja2 (Templates)
+
+---
+## 7. Conceptes Aplicats de Computació Distribuïda
 
 - Arquitectura **P2P híbrida**  
 - **Discovery** de nodes (multicast + bootstrap)  
